@@ -1,37 +1,48 @@
 #project/server/controllers
-from flask import jsonify, request
+from flask import jsonify, request,json, current_app
 from project.models.user import user_data, User
+from project.utilities.validation import user_validation
+import jwt
+from os import environ
+from datetime import datetime, timedelta
+from functools import wraps
+
+secret_key = environ.get("SECRET_KEY", "epicmail-reloaded")
+
 class UserController:
-    def __init__(self):
-        pass
     def signup_user(self):
-        data = request.get_json()
-
-        user_email = data.get(email)
-        Firstname = data.get(firstname)
-        Lastname = data.get(lastname)
-        Password = data.get(password)
-
-        if not user_email or not Firstname or not Lastname \
-        or not Password:
-            return jsonify({
-                "Error": "Required field is missing"
-            }), 400
-        new_user = User(
-    		email = user_email,  firstname= Firstname, lastname = Lastname, password = Password
-            )
-
-        user_data.append(
-            new_user.format_user_record()
-            )
-            
-        if len(user_data) == 0:
-            return jsonify({
-        "status": 200, 
-         "Error": "No user yet"
-         }), 200
+        """Api endpoint to Register"""
+        data = json.loads(request.data)
+        if not data:
+            return jsonify(
+                {
+                    "status": 400,
+                    "error": "Empty Registration request. Please provide Registration data"
+                    }), 400
+        new_user ={
+            "email": data.get("email"),
+            "firstname": data.get("firstname"),
+            "lastname": data.get("lastname"),
+            "password": data.get("password")
+            }
+        email = data.get("email")
+        firstname = data.get("firstname")
+        already_user = [user for user in user_data if user.email ==
+        email or user.firstname == firstname
+        ]
+        if already_user:
+            return jsonify({"status": 409, "error": "User already exists"}), 409
+        not_valid_user = user_validation(**new_user)
+        if not_valid_user:
+            return jsonify({"status": 400, "error": not_valid_user}), 400
+        user = User(**new_user)
+        user_data.append(user)
         return jsonify({
-        "data": new_user.format_user_record,  
-        "status": 201,            
-        "Message": "User created successfully" 
-        }), 201
+            "status": 201,
+            "data": [
+                {
+                    "user": user.format_user_record(),
+                    "success": " User registered Successfully"}
+                    ],
+                }
+                ),201

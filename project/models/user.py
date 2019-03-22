@@ -1,6 +1,6 @@
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 user_data = []
-
 
 class User:
     """ model class for users """
@@ -9,7 +9,7 @@ class User:
         self.email = kwargs["email"]
         self.firstname = kwargs["firstname"]
         self.lastname = kwargs["lastname"]
-        self.password = kwargs["password"]
+        self.password = generate_password_hash(kwargs["password"])
     
     def format_user_record(self):
         return {
@@ -19,15 +19,6 @@ class User:
         'lastname': self.lastname, 
         'password': self.password
         }
-
-
-
-
-
-
-
-
-
 
 
 
