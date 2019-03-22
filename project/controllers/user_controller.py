@@ -1,17 +1,13 @@
 #project/server/controllers
-from flask import jsonify, request,json, current_app
-from project.models.user import user_data, User
+from flask import jsonify, request,json
+from project.models.user import user_data, User, valid_credentials
 from project.utilities.validation import user_validation
-import jwt
-from os import environ
-from datetime import datetime, timedelta
-from functools import wraps
+from project.utilities.helpers import generate_token
 
 secret_key = environ.get("SECRET_KEY", "epicmail-reloaded")
 
 class UserController:
     def signup_user(self):
-        """Api endpoint to Register"""
         data = json.loads(request.data)
         if not data:
             return jsonify(
@@ -46,3 +42,37 @@ class UserController:
                     ],
                 }
                 ),201
+
+
+    def login_user(self):
+        login_credentials = json.loads(request.data)
+        response = None
+        if not login_credentials:
+            return jsonify(
+                {
+                    "status": 400,
+                    "error": "Empty Login request.Please provide login credentials"
+            }), 400
+        email = login_credentials.get("email")
+        password = login_credentials.get("password")
+
+        logged_in = is_valid_credentials(email,password)
+        if logged_in:
+            response = (
+                    jsonify(
+                        {
+                            "status": 200,
+                            "data": [
+                                {
+                                    "Token": generate_token(str(user._id)),
+                                    "Success": "User logged in successfully"
+                                }
+                                ],
+                                }
+                                ),200,
+                                )
+        else:
+            response = (
+                jsonify({"error": "Wrong login credentials.", "status": 401}),
+                401,
+                )

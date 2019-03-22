@@ -21,12 +21,14 @@ class User:
         }
 
 
-
-
-
-
-
-
+def valid_credentials(email, password):
+    "checking for validity of user login details"
+    for user in user_data:
+        if user['email'] == email and check_password_hash(
+            user['password'], password
+            ):
+            return user
+        return None
 
 
 

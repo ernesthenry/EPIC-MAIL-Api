@@ -8,3 +8,7 @@ u_controller=UserController()
 @user_blueprint.route("/auth/signup", methods=['POST'])
 def register_user():
     return u_controller.signup_user()
+
+@user_blueprint.route("/auth/login", methods=['POST'])
+def login():
+    return u_controller.login_user()
