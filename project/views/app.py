@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
+from project.controllers.home import Home
+
 app=Flask(__name__)
+
+home_page = Home()
 @app.route("/")
 def home():
-    """A welcoming route to my api"""
-    return jsonify({
-        'message': 'Welcome to Ernest\'s EPIC MAIL app.',
-        'status': '200'
-    }), 200
+    return home_page.home_route()
