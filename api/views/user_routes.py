@@ -1,4 +1,5 @@
-from project.controllers.user_controller import UserController
+#api/controllers
+from api.controllers.user_controller import UserController
 from flask import Blueprint
 
 user_blueprint = Blueprint("user_blueprint", __name__)

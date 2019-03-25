@@ -1,10 +1,8 @@
-#project/server/controllers
+#api/controllers
 from flask import jsonify, request,json
-from project.models.user import user_data, User, valid_credentials
-from project.utilities.validation import user_validation
-from project.utilities.helpers import generate_token
-
-secret_key = environ.get("SECRET_KEY", "epicmail-reloaded")
+from api.models.user import user_data, User, valid_credentials
+from api.utilities.validation import user_validation
+from api.utilities.helpers import generate_token
 
 class UserController:
     def signup_user(self):
@@ -23,8 +21,8 @@ class UserController:
             }
         email = data.get("email")
         firstname = data.get("firstname")
-        already_user = [user for user in user_data if user.email ==
-        email or user.firstname == firstname
+        already_user = [user for user in user_data if user['email'] ==
+        email
         ]
         if already_user:
             return jsonify({"status": 409, "error": "User already exists"}), 409
@@ -32,7 +30,7 @@ class UserController:
         if not_valid_user:
             return jsonify({"status": 400, "error": not_valid_user}), 400
         user = User(**new_user)
-        user_data.append(user)
+        user_data.append(user.format_user_record())
         return jsonify({
             "status": 201,
             "data": [
@@ -51,28 +49,25 @@ class UserController:
             return jsonify(
                 {
                     "status": 400,
-                    "error": "Empty Login request.Please provide login credentials"
+                    "error": "Couldn't find your account"
             }), 400
         email = login_credentials.get("email")
         password = login_credentials.get("password")
 
-        logged_in = is_valid_credentials(email,password)
-        if logged_in:
-            response = (
-                    jsonify(
+        userid = valid_credentials(email,password)
+        if userid:
+            return  jsonify(
                         {
                             "status": 200,
                             "data": [
                                 {
-                                    "Token": generate_token(str(user._id)),
+                                    "Token": generate_token(userid),
                                     "Success": "User logged in successfully"
                                 }
                                 ],
                                 }
-                                ),200,
-                                )
+                                ),200
+                            
         else:
-            response = (
-                jsonify({"error": "Wrong login credentials.", "status": 401}),
-                401,
-                )
+            return jsonify({"error": "Wrong login credentials.", "status": 401}), 401
+                       

@@ -5,17 +5,17 @@ import jwt
 from os import environ
 from functools import wraps
 
+SECRET_KEY = "epicmail-reloaded"
 
 secret_key = environ.get("SECRET_KEY", "epicmail-reloaded")
 
-
-def generate_token(user_id):
+def generate_token(user, isAdmin=False):
     try:
         # set up a payload with an expiration time
         payload = {
             'exp': datetime.utcnow() + timedelta(minutes=60),
             'iat': datetime.utcnow(),
-            'userid': user._id,
+            'userid':user['email'],
             "isAdmin": isAdmin
         }
         # create the byte string token using the payload and the SECRET key
@@ -69,7 +69,7 @@ def token_required(func):
             }), 401
         except jwt.InvalidTokenError:
             response = jsonify({
-                "erhror": "Invalid token",
+                "error": "Invalid token",
                 "status": 401
             }), 401
         return response

@@ -1,4 +1,4 @@
-#project/controllers
+#api/controllers
 from flask import jsonify
 class Home:
     def home(self):

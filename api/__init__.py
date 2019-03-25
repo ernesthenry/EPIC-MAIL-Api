@@ -1,6 +1,6 @@
 # #project/
 from flask import Flask, Blueprint
-from project.views.user_routes import user_blueprint
+from api.views.user_routes import user_blueprint
 
 def create_app():
     app = Flask(__name__)

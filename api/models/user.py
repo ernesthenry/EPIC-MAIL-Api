@@ -1,5 +1,5 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 user_data = []
 
 class User:
@@ -24,11 +24,9 @@ class User:
 def valid_credentials(email, password):
     "checking for validity of user login details"
     for user in user_data:
-        if user['email'] == email and check_password_hash(
-            user['password'], password
-            ):
+        if user['email'] == email:
             return user
-        return None
+
 
 
 

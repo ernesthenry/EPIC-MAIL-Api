@@ -1,6 +1,7 @@
+#api/controllers
 from flask import Blueprint
-from project import create_app
-from project.controllers.home_controller import Home
+from api import create_app
+from api.controllers.home_controller import Home
 
 app = create_app()
 
