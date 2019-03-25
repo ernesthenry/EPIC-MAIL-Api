@@ -7,6 +7,8 @@ def user_validation(**kwargs):
     error["firstname"] = validate_name(kwargs["firstname"])
     error["lastname"] = validate_name(kwargs["lastname"])
     error["password"] = validate_password(kwargs["password"])
+    error["firstname"] = contains_space(kwargs["firstname"])
+    error["lastname"] = contains_space(kwargs["lastname"])
 
     invalid = {key: value for key, value in error.items() if value}
     return invalid
@@ -33,6 +35,13 @@ def validate_name(name):
             return "Name should not contain any integers"
 
     return None
+    
+def contains_space(name):
+    """Checks if name contains a space"""
+    if " " in name or len(str(name).split(" ")) > 1:
+        return True
+    return False
+
 
 def validate_password(password):
     """Function that performs Validation of a users password"""
@@ -47,3 +56,19 @@ def validate_password(password):
             or not re.search("[@$!%*?&#-]", password):
         error = "Password should have atleast one lowercase character,one Uppercase character, one Integer and one Special character"
     return error
+
+
+def validate_message(**kwargs):
+    errors = {}
+    errors["subject"] = validate_sentence(kwargs.get("subject"))
+    errors["message"] = validate_sentence(kwargs.get("message"))
+    invalid = {key: value for key, value in errors.items() if value}
+    return invalid
+
+def validate_sentence(sentence):
+    error = None
+    sentence = str(sentence).strip()
+    if sentence.isdigit():
+        error = "Field cannot be a number"
+    return error
+    

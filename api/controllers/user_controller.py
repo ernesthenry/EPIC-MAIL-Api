@@ -35,8 +35,8 @@ class UserController:
             "status": 201,
             "data": [
                 {
-                    "user": user.format_user_record(),
-                    "success": " User registered Successfully"}
+                    "user": user.format_user_record()
+                    }
                     ],
                 }
                 ),201
@@ -44,7 +44,6 @@ class UserController:
 
     def login_user(self):
         login_credentials = json.loads(request.data)
-        response = None
         if not login_credentials:
             return jsonify(
                 {
@@ -66,8 +65,13 @@ class UserController:
                                 }
                                 ],
                                 }
-                                ),200
+                        ),200
                             
         else:
-            return jsonify({"error": "Wrong login credentials.", "status": 401}), 401
+            return jsonify(
+                {
+                    "error": "Wrong login credentials.",
+                     "status": 401
+                     }
+                ),401
                        

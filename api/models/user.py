@@ -10,7 +10,7 @@ class User:
         self.firstname = kwargs["firstname"]
         self.lastname = kwargs["lastname"]
         self.password = generate_password_hash(kwargs["password"])
-    
+        
     def format_user_record(self):
         return {
         'id': self._id,
