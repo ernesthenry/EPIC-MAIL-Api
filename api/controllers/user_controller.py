@@ -35,8 +35,7 @@ class UserController:
             "status": 201,
             "data": [
                 {
-                    "user": user.format_user_record()
-                    }
+                    "user": user.format_user_record()}
                     ],
                 }
                 ),201
